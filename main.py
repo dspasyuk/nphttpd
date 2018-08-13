@@ -1,4 +1,4 @@
-from neo import ledserv
+from uhttpd import httserv
 try:
    httserv()
 except OSError:
