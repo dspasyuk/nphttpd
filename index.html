@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+    <html>
+    <head><meta charset="ISO-8859-1"> 
+    <script  type="text/javascript">
+    function microAjax(e){function r(){}e.method||(e.method="POST"),e.success||(e.success=r),e.warning||(e.warning=r),e.error||(e.error=r);var n=new XMLHttpRequest;n.open(e.method,e.url,!0),n.send(e.data),n.onload=function(){4===n.readyState&&200===n.status?e.success(n.responseText):e.warning()},n.onerror=e.error}
+    </script>
+    <title>Lights control</title>
+    <style>
+    p.round-button {
+    align:center;
+    width:200px;
+    height:110px;
+    border: 1px solid #CCCACA;
+    border-radius: 20%;
+    color:#000000;
+    margin: 30px;
+    text-align: center;
+    text-decoration:none;
+    background: #464646;
+    box-shadow: 4px 4px 8px 0 rgba(0,0,0,0.2);
+    font-size:16px;
+    font-weight:bold;
+    padding-top: 80px;
+    }
+    p.round-button:hover {
+    border: 0px solid #000000;
+    background:  #000000  !important;
+    color:#FFFFFF;
+    text-align:center;
+    }
+    </style>
+    </head>
+    <center>
+    <form>
+    <div style="padding-top:50px">
+        <table>
+        <tr>
+        <td>
+        </td>
+        <td>
+        <table>
+        <tr><td>
+          <p style ="background:#ff6c6c" class = "round-button" onclick="adj('POST=RED')">RED</p>
+        </td>
+            <td>
+          <p style ="background:#6cffb6" class = "round-button"  onclick="adj('POST=GREEN')">GREEN</p>
+            </td>
+        <td>
+          <p style ="background:#48a4ff" class = "round-button"  onclick="adj('POST=BLUE')">BLUE</p>
+        </td>
+        </tr>
+        <tr>
+        <td>
+          <p style ="background:#ffff00" class = "round-button"  onclick="adj('POST=YELLOW')">YELLOW</p>
+        </td>
+        <td>
+          <p style ="background:#ffffff" class = "round-button"  onclick="adj('POST=WHITE')">WHITE</p>
+        </td>
+         <td>
+          <p style ="background: #e3aef0" class = "round-button"  onclick="adj('POST=PURPLE')">PURPLE</p>
+        </td>
+        </tr>
+        <tr>
+        <td>
+             <p style ="background: #40E0D0" class = "round-button"  onclick="adj('POST=TURQUOISE')">TURQUOISE</p>
+        </td>
+        <td>
+          <p style ="background: #87ceeb" class = "round-button"  onclick="adj('POST=SKYBL-UE')">SKY BLUE</p>
+        </td>
+        <td>
+          <p style ="background: #5b5b5b" class = "round-button"  onclick="adj('POST=OFF')">OFF</p>
+        </td>
+
+        </tr>
+        </table>
+       <div>
+       <script>
+            function adj(data) {
+            datastr =  JSON.stringify(data);
+            microAjax({
+              url: datastr,
+              method: "POST",
+              data: datastr
+            });
+            }
+       </script>
+    </div>
+    </td>
+    </tr>
+    </table>
+    </div>
+    </form>
+    </center>
+    </html>
