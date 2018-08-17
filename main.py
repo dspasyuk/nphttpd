@@ -1,4 +1,4 @@
-from uhttpd import httserv
+from nphttpd import httserv
 try:
    httserv()
 except OSError:
