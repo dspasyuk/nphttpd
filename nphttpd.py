@@ -98,15 +98,12 @@ def httserv():
                 np.write()
         zero()
         response = html
+        request = None
         try:
            conn.sendall(response)
            time.sleep(0.2)
         except Exception as exc:
            print("Send ----------",exc.args[0])
            pass
-        request = None
-        try:
+        finally:
            conn.close()
-        except Exception as exc:
-           print("Close ---------",exc.args[0])
-           pass
