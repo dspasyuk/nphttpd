@@ -8,7 +8,7 @@ from machine import reset
 from neopixel import NeoPixel
 
 IP_ADDRESS = "192.168.0.15" #set your ip here
-
+PIN_ID = 5
 
 def zero():
     ledred = -1
@@ -38,7 +38,7 @@ def httserv():
         time.sleep(2)
         reset()
         pass
-    np = NeoPixel(Pin(5), 60)
+    np = NeoPixel(Pin(PIN_ID), 60)
     vvv = 255
     while True:
         zero()
