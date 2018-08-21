@@ -7,30 +7,34 @@ from machine import Pin
 from machine import reset
 from neopixel import NeoPixel
 
+IP_ADDRESS = "192.168.0.15" #set your ip here
+
+
 def zero():
-        ledred = -1
-        ledgreen = -1
-        ledblue = -1
-        ledwhite = -1
-        ledpurple = -1
-        ledyellow = -1
-        ledsblue = -1
-        ledtur = -1
-        ledoff = -1
+    ledred = -1
+    ledgreen = -1
+    ledblue = -1
+    ledwhite = -1
+    ledpurple = -1
+    ledyellow = -1
+    ledsblue = -1
+    ledtur = -1
+    ledoff = -1
+
 
 def httserv():
     try:
-       fhtml = open("index.html", "r")
-       html = fhtml.read()
-       fhtml.close()
+        fhtml = open("index.html", "r")
+        html = fhtml.read()
+        fhtml.close()
     except OSError:
         pass
     try:
         s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-        s.bind(('', 80))
+        s.bind((IP_ADDRESS, 80))
         s.listen(5)
     except Exception as exc:
-        print("Socket -------------", exc.args[0])
+        print("Address in use, restarting", exc.args[0])
         time.sleep(2)
         reset()
         pass
@@ -41,7 +45,7 @@ def httserv():
         try:
             conn, addr = s.accept()
         except Exception as exc:
-            print("accept -------------", exc.args[0])
+            print("Socket Accept Error ", exc.args[0])
             reset()
             pass
         try:
@@ -60,39 +64,39 @@ def httserv():
         ledsblue = request.find("SKYBL-UE")
         ledtur = request.find("TURQUOISE")
         ledoff = request.find("OFF")
-        if ledred>-1:
-           for i, pixel in enumerate(np):
-               np[i] = (vvv, 0, 0)
-               np.write()
-        if ledgreen >-1:
+        if ledred > -1:
+            for i, pixel in enumerate(np):
+                np[i] = (vvv, 0, 0)
+                np.write()
+        if ledgreen > -1:
             for i, pixel in enumerate(np):
                 np[i] = (0, vvv, 0)
                 np.write()
-        if ledblue >-1:
+        if ledblue > -1:
             for i, pixel in enumerate(np):
                 np[i] = (0, 0, vvv)
                 np.write()
-        if ledsblue >-1:
+        if ledsblue > -1:
             for i, pixel in enumerate(np):
                 np[i] = (135, 206, 235)
                 np.write()
-        if ledwhite >-1:
+        if ledwhite > -1:
             for i, pixel in enumerate(np):
                 np[i] = (vvv, vvv, vvv)
                 np.write()
-        if ledoff >-1:
+        if ledoff > -1:
             for i, pixel in enumerate(np):
                 np[i] = (0, 0, 0)
                 np.write()
-        if ledpurple >-1:
+        if ledpurple > -1:
             for i, pixel in enumerate(np):
                 np[i] = (vvv, 0, vvv)
                 np.write()
-        if ledyellow >-1:
+        if ledyellow > -1:
             for i, pixel in enumerate(np):
                 np[i] = (vvv, vvv, 0)
                 np.write()
-        if ledtur >-1:
+        if ledtur > -1:
             for i, pixel in enumerate(np):
                 np[i] = (64, 224, 208)
                 np.write()
@@ -100,10 +104,10 @@ def httserv():
         response = html
         request = None
         try:
-           conn.sendall(response)
-           time.sleep(0.2)
+            conn.sendall(response)
+            time.sleep(0.2)
         except Exception as exc:
-           print("Send ----------",exc.args[0])
-           pass
+            print("Send Error", exc.args[0])
+            pass
         finally:
-           conn.close()
+            conn.close()
