@@ -7,7 +7,7 @@ from machine import Pin
 from machine import reset
 from neopixel import NeoPixel
 
-IP_ADDRESS = "192.168.0.15" #set your ip here
+IP_ADDRESS = "192.168.0.15" #set your IP here
 PIN_ID = 5
 np = NeoPixel(Pin(PIN_ID), 60)
 
