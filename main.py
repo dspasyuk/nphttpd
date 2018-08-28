@@ -1,6 +1,6 @@
-from nphttpd import httserv
+from nphttpd import HttServ
 try:
-   httserv()
+    HttServ()
 except OSError:
     import machine
     machine.reset()
