@@ -99,34 +99,31 @@ class HttServ(object):
                 html = fhtml.read()
         except OSError:
             pass
-        try:
-            while True:
-                self.zero()
-                try:
-                    self.s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-                    self.s.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
-                    self.s.bind((self.ip_address, self.port))
-                    self.s.listen(5)
-                except Exception as exc:
-                    print("Address in use, restarting", exc.args[0])
-                    time.sleep(2)
-                    reset()
-                    pass
-                try:
-                    self.conn, addr = self.s.accept()
-                except Exception as exc:
-                    print("Socket Accept Error ", exc.args[0])
-                    reset()
-                    pass
-                print('Connected by', addr)
-                try:
-                    self.request = str(self.conn.recv(1024))
-                except Exception as exc:
-                    print("recv -------------", exc.args[0])
-                    reset()
-                    pass
-                if not self.request: break
-                self.parse_request()
-                self.connection(html)
-        except Exception as exc:
-            print("while loop", exc.args[0])
+        while True:
+            self.zero()
+            try:
+                self.s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+                self.s.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
+                self.s.bind((self.ip_address, self.port))
+                self.s.listen(5)
+            except Exception as exc:
+                print("Address in use, restarting", exc.args[0])
+                time.sleep(2)
+                reset()
+                pass
+            try:
+                self.conn, addr = self.s.accept()
+            except Exception as exc:
+                print("Socket Accept Error ", exc.args[0])
+                reset()
+                pass
+            print('Connected by', addr)
+            try:
+                self.request = str(self.conn.recv(1024))
+            except Exception as exc:
+                print("recv -------------", exc.args[0])
+                reset()
+                pass
+            if not self.request: break
+            self.parse_request()
+            self.connection(html)
