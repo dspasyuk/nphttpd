@@ -10,7 +10,7 @@ from neopixel import NeoPixel
 
 class HttServ(object):
     def __init__(self):
-        self.ip_address = "192.168.0.11"  # set your ip here
+        self.ip_address = "192.168.0.12"  # set your ip here
         self.port = 80  # set your port here
         pin_id = 5
         nparray = 60
@@ -39,7 +39,7 @@ class HttServ(object):
             pass
         finally:
             self.conn.close()
-            self.s.close()
+            #self.s.close()
             self.zero()
 
     def parse_request(self):
@@ -99,20 +99,22 @@ class HttServ(object):
                 html = fhtml.read()
         except OSError:
             pass
+        try:
+            self.s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+            self.s.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
+            self.s.bind((self.ip_address, self.port))
+            self.s.listen(5)
+        except Exception as exc:
+            print("Address in use, restarting", exc.args[0])
+            time.sleep(2)
+            reset()
+            pass
         while True:
             self.zero()
             try:
-                self.s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-                self.s.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
-                self.s.bind((self.ip_address, self.port))
-                self.s.listen(5)
-            except Exception as exc:
-                print("Address in use, restarting", exc.args[0])
-                time.sleep(2)
-                reset()
-                pass
-            try:
                 self.conn, addr = self.s.accept()
+                for i in str(self.conn).split():
+                    print(i)
             except Exception as exc:
                 print("Socket Accept Error ", exc.args[0])
                 reset()
@@ -124,6 +126,5 @@ class HttServ(object):
                 print("recv -------------", exc.args[0])
                 reset()
                 pass
-            if not self.request: break
             self.parse_request()
             self.connection(html)
