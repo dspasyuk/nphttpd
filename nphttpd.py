@@ -113,8 +113,6 @@ class HttServ(object):
             self.zero()
             try:
                 self.conn, addr = self.s.accept()
-                for i in str(self.conn).split():
-                    print(i)
             except Exception as exc:
                 print("Socket Accept Error ", exc.args[0])
                 reset()
