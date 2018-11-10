@@ -3,6 +3,6 @@ nphttpd is a simple socket server implemented in MicroPython which is used to co
 
 # Usage:
 
-Upload .py and html files to your esp MicroPython-enabled board and restart the board.
+Upload .py and .html files to your esp MicroPython-enabled board and restart the board.
 
     
