@@ -1,32 +1,39 @@
-HTTP/1.1 200 OK
-
 <!DOCTYPE html>
     <html>
     <head><meta charset="ISO-8859-1"> 
     <script  type="text/javascript">
     function microAjax(e){function r(){}e.method||(e.method="POST"),e.success||(e.success=r),e.warning||(e.warning=r),e.error||(e.error=r);var n=new XMLHttpRequest;n.open(e.method,e.url,!0),n.send(e.data),n.onload=function(){4===n.readyState&&200===n.status?e.success(n.responseText):e.warning()},n.onerror=e.error}
     </script>
+    <!--<script type="text/javascript" src="cols.js"></script>-->
     <title>Lights control</title>
     <style>
     p.round-button {
     align:center;
-    width:200px;
-    height:110px;
-    border: 1px solid #CCCACA;
-    border-radius: 20%;
-    color:#000000;
-    margin: 30px;
+    width:80px;
+    height:48px;
+    border: 0px solid #CCCACA;
+    border-radius: 15%;
+    color:#FFFFFF;
+    margin: 8px;
     text-align: center;
     text-decoration:none;
     background: #464646;
-    box-shadow: 4px 4px 8px 0 rgba(0,0,0,0.2);
-    font-size:16px;
+    box-shadow: 4px 4px 12px 0 rgba(0,0,0,0.5);
+    font-size:12px;
     font-weight:bold;
-    padding-top: 80px;
+    padding-top: 32px;
     }
     p.round-button:hover {
-    border: 0px solid #000000;
-    background:  #000000  !important;
+    box-shadow: 4px 4px 16px 0 rgba(1,0,0,3);
+    width:76px;
+    height:45px;
+    color:#FFFFFF;
+    text-align:center;
+    }
+    p.round-button:active {
+    box-shadow: 4px 4px 16px 0 rgba(1,0,0,3);
+    width:76px;
+    height:45px;
     color:#FFFFFF;
     text-align:center;
     }
@@ -34,61 +41,116 @@ HTTP/1.1 200 OK
     </head>
     <body>
     <center>
-    <form>
-    <div style="padding-top:50px">
-        <table>
-        <tr>
-        <td>
-        </td>
-        <td>
-        <table>
-        <tr><td>
-          <p style ="background:#ff6c6c" class = "round-button" onclick="adj('POST=RED')">RED</p>
-        </td>
-            <td>
-          <p style ="background:#6cffb6" class = "round-button"  onclick="adj('POST=GREEN')">GREEN</p>
-            </td>
-        <td>
-          <p style ="background:#48a4ff" class = "round-button"  onclick="adj('POST=BLUE')">BLUE</p>
-        </td>
-        </tr>
-        <tr>
-        <td>
-          <p style ="background:#ffff00" class = "round-button"  onclick="adj('POST=YELLOW')">YELLOW</p>
-        </td>
-        <td>
-          <p style ="background:#ffffff" class = "round-button"  onclick="adj('POST=WHITE')">WHITE</p>
-        </td>
-         <td>
-          <p style ="background: #e3aef0" class = "round-button"  onclick="adj('POST=PURPLE')">PURPLE</p>
-        </td>
-        </tr>
-        <tr>
-        <td>
-             <p style ="background: #40E0D0" class = "round-button"  onclick="adj('POST=TURQUOISE')">TURQUOISE</p>
-        </td>
-        <td>
-          <p style ="background: #87ceeb" class = "round-button"  onclick="adj('POST=SKYBL-UE')">SKY BLUE</p>
-        </td>
-        <td>
-          <p style ="background: #5b5b5b" class = "round-button"  onclick="adj('POST=OFF')">OFF</p>
-        </td>
-
-        </tr>
-        </table>
-       <div>
-       <script>
-            function adj(data) {
+    <script>
+        var mp = 6;
+        function wait(ms){
+            var d = new Date();
+            var d2 = null;
+            do { d2 = new Date(); }
+            while(d2-d < ms);
+            }
+        function adj(data) {
             datastr =  JSON.stringify(data);
+            console.log(datastr);
             microAjax({
               url: datastr,
               method: "POST",
               data: datastr
             });
             }
-       </script>
+        function runloop() {
+            var value = createSpectrum(mp*mp);
+            for (var v=0; v < value.length; v++) {
+                var vr = value[v];
+                adj(vr);
+                wait(1000);
+            }
+            }
+        hslToRgb = function(_h, s, l) {
+        var h = Math.min(_h, 359)/60;
+
+        var c = (1-Math.abs((2*l)-1))*s;
+        var x = c*(1-Math.abs((h % 2)-1));
+        var m = l - (0.5*c);
+
+        var r = m, g = m, b = m;
+
+        if (h < 1) {
+        r += c, g = +x, b += 0;
+        } else if (h < 2) {
+        r += x, g += c, b += 0;
+        } else if (h < 3) {
+        r += 0, g += c, b += x;
+        } else if (h < 4) {
+        r += 0, g += x, b += c;
+        } else if (h < 5) {
+        r += x, g += 0, b += c;
+        } else if (h < 6) {
+        r += c, g += 0, b += x;
+        } else {
+        r = 0, g = 0, b = 0;
+        }
+
+    return 'rgb(' + Math.floor(r*255) + ', ' + Math.floor(g*255) + ', ' + Math.floor(b*255) + ')';
+    }
+
+    createSpectrum = function(length) {
+        var colors = [];
+        // 270 because we don't want the spectrum to circle back
+        var step = 270/length;
+        for (var i = 1; i <= length; i++) {
+            var color = hslToRgb((i)*step, 0.5, 0.5);
+            colors.push(color);
+        }
+    return colors;
+    }
+
+    function gencols(){
+        var el = document.getElementById('therow');
+        var value = createSpectrum(mp*mp);
+        var ohtml = [];
+        for (var v=0; v < value.length; v++) {
+        var vr = value[v];
+        var count = v/mp;
+
+        if (Number.isInteger(count)==true)
+        {
+            ohtml.push('</tr><tr><td><p style ="background:'+value[v]+'" class = "round-button" onclick="adj(\''+vr+'\')"></p></td>');
+        }
+        else {
+            ohtml.push('<td><p style ="background:'+value[v]+'" class = "round-button" onclick="adj(\''+vr+'\')"></p></td>');
+        }
+        }
+        console.log(ohtml);
+        el.insertAdjacentHTML("beforeend" ,ohtml.join(""));
+    }
+    </script>
+    <form>
+    <div style="padding-top:50px">
+        <table>
+        <tr>
+        <td>
+        <p style ="background:#C0c0c0" class = "round-button" onclick="adj('rgb(255, 255, 255)')"></p>
+        <p style ="background:#FF0000" class = "round-button" onclick="adj('rgb(255, 0, 0)')"></p>
+        <p style ="background:#00FF00" class = "round-button" onclick="adj('rgb(0, 255, 0)')"></p>
+        <p style ="background:#0000FF" class = "round-button" onclick="adj('rgb(0, 0, 255)')"></p>
+        <p style ="background:#000000" class = "round-button" onclick="adj('OFF')">OFF</p>
+
+        </td>
+        <td>
+        <table><tbody id = "therow">
+           <script type="text/javascript">
+            gencols();
+            </script>
+        </tbody>
+        </table>
+       <div>
+
     </div>
     </td>
+            <td>
+        <p style ="background:#000000" class = "round-button" onclick="runloop()">LOOP</p></td>
+        <td>
     </tr>
     </table>
     </div>
