@@ -6,26 +6,26 @@ import time
 from machine import Pin
 from machine import reset
 from neopixel import NeoPixel
-
+import network
 
 class HttServ(object):
     def __init__(self):
-        self.ip_address = '192.168.0.254'  # set your ip here
-        self.set_ip()
-        self.port = 80  # set your port here
-        pin_id = 5
-        nparray = 60
-        self.conn = None
-        self.s = None
-        self.np = NeoPixel(Pin(pin_id), nparray)
-        self.run_socket()
+        self.ip_address = '192.168.0.250'  # set your ip here
+        ip_change = self.set_ip()
+        if ip_change:
+           self.port = 80  # set your port here
+           pin_id = 5
+           nparray = 60
+           self.conn = None
+           self.s = None
+           self.np = NeoPixel(Pin(pin_id), nparray)
+           self.run_socket()
 
     def set_ip(self):
-        import network
         sta_if = network.WLAN(network.STA_IF)
         sta_if.active(True)
-        sta_if.ifconfig((self.ip_address,'255.255.255.0','192.168.0.1','192.168.0.1')) # ip, mask, gateway, dns
-        time.sleep(1)
+        sta_if.ifconfig((self.ip_address,'255.255.255.0','192.168.0.1','192.168.0.1'))
+        return True
 
     def connection(self, html):
         try:
