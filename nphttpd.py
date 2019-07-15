@@ -1,12 +1,12 @@
 # License: GPL
 # GNU GENERAL PUBLIC LICENSE
 # Copyright (C) Denis Spasyuk
-import usocket as socket
-import time
+import socket
+from time import sleep
 from machine import Pin
 from machine import reset
 from neopixel import NeoPixel
-import network
+from network import WLAN, STA_IF
 
 class HttServ(object):
     def __init__(self):
@@ -22,15 +22,16 @@ class HttServ(object):
            self.run_socket()
 
     def set_ip(self):
-        sta_if = network.WLAN(network.STA_IF)
+        sta_if = WLAN(STA_IF)
         sta_if.active(True)
         sta_if.ifconfig((self.ip_address,'255.255.255.0','192.168.0.1','192.168.0.1'))
+        sleep(1)
         return True
 
     def connection(self, html):
         try:
             self.conn.sendall(html)
-            time.sleep(0.2)
+            sleep(0.2)
         except Exception as exc:
             print("Send Error", exc.args[0])
             pass
@@ -62,12 +63,12 @@ class HttServ(object):
             pass
         try:
             self.s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-            self.s.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
+            #self.s.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
             self.s.bind((self.ip_address, self.port))
             self.s.listen(5)
         except Exception as exc:
             print("Address in use, restarting", exc.args[0])
-            time.sleep(2)
+            sleep(2)
             reset()
             pass
         while True:
