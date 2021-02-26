@@ -7,26 +7,20 @@ from machine import Pin
 from machine import reset
 from neopixel import NeoPixel
 from network import WLAN, STA_IF
+import gc
+gc.enable()
 
 class HttServ(object):
     def __init__(self):
-        self.ip_address = '192.168.0.250'  # set your ip here
-        ip_change = self.set_ip()
-        if ip_change:
-           self.port = 80  # set your port here
-           pin_id = 5
-           nparray = 60
-           self.conn = None
-           self.s = None
-           self.np = NeoPixel(Pin(pin_id), nparray)
-           self.run_socket()
-
-    def set_ip(self):
         sta_if = WLAN(STA_IF)
-        sta_if.active(True)
-        sta_if.ifconfig((self.ip_address,'255.255.255.0','192.168.0.1','192.168.0.1'))
-        sleep(1)
-        return True
+        self.ip_address = sta_if.ifconfig()[0]
+        self.port = 80  # set your port here
+        pin_id = 5
+        nparray = 60
+        self.conn = None
+        self.s = None
+        self.np = NeoPixel(Pin(pin_id), nparray)
+        self.run_socket()
 
     def connection(self, html):
         try:
@@ -81,6 +75,8 @@ class HttServ(object):
                 reset()
                 pass
             print('Connected by', addr)
+            print("FREE MEM:", gc.mem_free())
+            gc.collect()
             try:
                 self.request = str(self.conn.recv(1024))
             except Exception as exc:
